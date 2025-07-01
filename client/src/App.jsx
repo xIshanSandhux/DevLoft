@@ -8,7 +8,7 @@ function App() {
       <nav className="navbar">
         <div className="nav-container">
           <div className="nav-logo">
-            <span className="logo-text">CodeCollab</span>
+            <span className="logo-text">DevLoft</span>
           </div>
           <div className="nav-menu">
             <a href="#features" className="nav-link">Features</a>
@@ -30,8 +30,7 @@ function App() {
               Code together seamlessly with your team in real-time.
             </p>
             <div className="hero-cta">
-              <button className="btn btn-primary btn-large">Start Coding</button>
-              <button className="btn btn-secondary btn-large">Learn More</button>
+              <button className="btn btn-primary btn-large">Get Started</button>
             </div>
           </div>
         </div>
@@ -47,8 +46,8 @@ function App() {
               <p>See changes as they happen with instant code synchronization.</p>
             </div>
             <div className="feature-card">
-              <h3>Secure Workspaces</h3>
-              <p>Enterprise-grade security with encrypted connections.</p>
+              <h3>Local Projects Import</h3>
+              <p>Import your local projects or files to the platform.</p>
             </div>
             <div className="feature-card">
               <h3>Live Chat</h3>
@@ -61,8 +60,8 @@ function App() {
       {/* About Section */}
       <section id="about" className="about">
         <div className="container">
-          <h2>About CodeCollab</h2>
-          <p>CodeCollab is a real-time code collaboration platform designed for software engineers.</p>
+          <h2>About DevLoft</h2>
+          <p>DevLoft is a real-time code collaboration platform designed for software engineers.</p>
         </div>
       </section>
 
@@ -70,14 +69,14 @@ function App() {
       <section id="contact" className="contact">
         <div className="container">
           <h2>Contact Us</h2>
-          <p>Get in touch to learn more about CodeCollab.</p>
+          <p>Get in touch to learn more about DevLoft.</p>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="footer">
         <div className="container">
-          <p>&copy; 2024 CodeCollab. All rights reserved.</p>
+          <p>&copy; 2025 DevLoft. All rights reserved.</p>
         </div>
       </footer>
     </div>
