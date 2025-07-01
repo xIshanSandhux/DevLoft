@@ -17,6 +17,10 @@ body {
   min-height: 100vh;
 }
 
+.home{
+  background-color: #f8fafc;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
