@@ -1,4 +1,4 @@
-html, body, #root, .app {
+html, body, #root, .app, .home {
   background: #fff !important;
   width: 99vw;
   min-height: 100vh;
