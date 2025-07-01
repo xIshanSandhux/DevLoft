@@ -1,6 +1,6 @@
 # CodeCollab
 
-Cureently under dev
+Currently under dev
 
 ![image](https://github.com/user-attachments/assets/b6f6d551-6f7b-4678-96cc-bf15d2231c2c)
 
