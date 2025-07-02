@@ -1,4 +1,4 @@
-# CodeCollab
+# DevLoft
 
 Currently under dev
 
