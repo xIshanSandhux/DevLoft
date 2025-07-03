@@ -3,10 +3,27 @@
 
 import uvicorn
 import socketio
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from api.room_gen import router
 
-sio = socketio.AsyncServer(cors_allowed_origins="*")
-app = socketio.ASGIApp(sio)
+
+fastapi_app = FastAPI()
+
 # server url: http://127.0.0.1:8000
+
+fastapi_app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # You can restrict to your frontend domain
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+fastapi_app.include_router(router, prefix="/api")
+
+sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*")
+sio_app = socketio.ASGIApp(sio, other_asgi_app=fastapi_app)  # combine both!
 
 
 @sio.event
@@ -30,3 +47,6 @@ def joinRoom(sid, data):
         'username': sid,
         'roomId': roomId
     }, room=roomId, skip_sid=sid)
+
+
+app = sio_app
