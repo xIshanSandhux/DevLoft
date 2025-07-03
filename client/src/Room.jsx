@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './Room.css';
 
 function Room() {
@@ -8,11 +9,20 @@ function Room() {
   const [roomId, setRoomId] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
+  const API_URL = 'http://127.0.0.1:8000/api';
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulate room generation (replace with real logic later)
-    setRoomId(Math.random().toString(36).substring(2, 10));
-    setRoomCreated(true);
+    try{
+      const roomid_response = await axios.post(`${API_URL}/room_id_gen`, {
+        room_password: password
+      });
+      setRoomId(roomid_response.data.room_id);
+      console.log("roomId", roomId);
+      setRoomCreated(true);
+    } catch (error) {
+      console.error('Error generating room:', error);
+    }
   };
 
   return (

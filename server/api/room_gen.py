@@ -26,6 +26,7 @@ def room_id_gen(room: RoomCreate):
         # adding the room_id and the hashed password to the all_rooms
         all_rooms[roomid] = pwd_hashed
         # returning the room_id
+        print("all_rooms", all_rooms)
         return {"room_id": roomid}
 
     except Exception as e:
