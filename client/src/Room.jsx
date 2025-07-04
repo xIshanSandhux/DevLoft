@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './Room.css';
+import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 function Room() {
-  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [roomCreated, setRoomCreated] = useState(false);
-  const [roomId, setRoomId] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
 
   const API_URL = 'http://127.0.0.1:8000/api';
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,9 +17,12 @@ function Room() {
       const roomid_response = await axios.post(`${API_URL}/room_id_gen`, {
         room_password: password
       });
-      setRoomId(roomid_response.data.room_id);
-      console.log("roomId", roomId);
+      const new_room_id = roomid_response.data.room_id;
       setRoomCreated(true);
+      if(roomCreated){
+        toast.success(`Room created ${new_room_id} successfully!`);
+      }
+      navigate(`/enter-room/${new_room_id}`);  
     } catch (error) {
       console.error('Error generating room:', error);
     }
@@ -29,18 +32,7 @@ function Room() {
     <div className="room-create-container">
       <div className="room-create-card">
         <h2 className="room-create-title">Create Room</h2>
-        {!roomCreated ? (
           <form className="room-form" onSubmit={handleSubmit}>
-            <label htmlFor="name">Your Name</label>
-            <input
-              id="name"
-              type="text"
-              className="room-input"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="Enter your name"
-              required
-            />
             <label htmlFor="password">Room Password</label>
             <input
               id="password"
@@ -56,13 +48,6 @@ function Room() {
               Generate Room
             </button>
           </form>
-        ) : (
-          <div className="room-success">
-            <h3>Room Created!</h3>
-            <p><strong>Room ID:</strong> <span className="room-id">{roomId}</span></p>
-            <p>Share this Room ID and password with your collaborators.</p>
-          </div>
-        )}
       </div>
     </div>
   );

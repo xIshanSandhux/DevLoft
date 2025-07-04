@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const socket_url = process.env.SOCKET_URL;
+const socket_url = import.meta.env.VITE_SOCKET_URL;
 console.log(socket_url);
 
 let socket = null;
@@ -28,8 +28,8 @@ export const disconnectSocket = () => {
     }
 };
 
-export const joinRoom = (roomId) => {
+export const joinRoom = (roomId, name) => {
     if (socket) {
-        socket.emit("joinRoom", roomId);
+        socket.emit("joinRoom", {roomId, name});
     }
 };
