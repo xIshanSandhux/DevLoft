@@ -2,20 +2,40 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './enterRoom.css';
 import { useParams, useNavigate } from 'react-router-dom';
+import { connectSocket, joinRoom } from '../helper/socket';
+import { toast } from 'react-hot-toast';
 
 function EnterRoom() {
   const {roomId} = useParams();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const [roomCreated, setRoomCreated] = useState(false);
-//   const [roomId, setRoomId] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
 
   const API_URL = 'http://127.0.0.1:8000/api';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("roomId", roomId);
+    try{
+        const enter_room_response = await axios.post(`${API_URL}/enter_room`, {
+            room_id: roomId,
+            room_password: password
+        });
+        const message = enter_room_response.data.message;
+        console.log("enter_room_response", message);
+        if (message === "Room entered successfully"){
+            const socket = connectSocket();
+            joinRoom("joinRoom", {roomId, name});
+            toast.success("Room entered successfully");
+            localStorage.setItem("name", name);
+            navigate(`/collab-room/${roomId}`);
+        } else {
+            toast.error("Invalid password");
+        }
+    } catch (error) {
+        console.error("Error entering room:", error);
+    }
   };
 
   return (
@@ -51,12 +71,12 @@ function EnterRoom() {
               className="room-input"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              placeholder="Enter the room password"
+              placeholder="Enter room password"
 
               required
             />
             <button type="submit" className="btn btn-primary btn-large room-generate-btn">
-              Generate Room
+              Enter Room
             </button>
           </form>
       </div>

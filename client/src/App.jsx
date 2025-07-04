@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast'
 import Room from './Room'
 import Home from './home/Home'
 import EnterRoom from './enterRoom/EnterRoom'
+import CollabRoom from './collab/collabRoom'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/generate-room" element={<Room />} />
         <Route path="/enter-room/:roomId" element={<EnterRoom />} />
+        <Route path="/collab-room/:roomId" element={<CollabRoom />} />
       </Routes>
     </Router>
   );

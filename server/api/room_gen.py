@@ -11,6 +11,10 @@ all_rooms = {}
 class RoomCreate(BaseModel):
     room_password:str
 
+class RoomEnter(BaseModel):
+    room_id:str
+    room_password:str
+
 # creating a roomid and hashing the password
 @router.post("/room_id_gen")
 def room_id_gen(room: RoomCreate):
@@ -29,5 +33,20 @@ def room_id_gen(room: RoomCreate):
         print("all_rooms", all_rooms)
         return {"room_id": roomid}
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/enter_room")
+def enter(room: RoomEnter):
+
+    try:
+        if room.room_id in all_rooms:
+            has_pwd = hashlib.sha256(room.room_password.encode()).hexdigest()
+            if has_pwd == all_rooms[room.room_id]:
+                return {"message": "Room entered successfully"}
+            else:
+                return {"message": "Invalid password"}
+        else:
+            return {"message": "Room not found"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

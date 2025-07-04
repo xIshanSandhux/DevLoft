@@ -26,12 +26,16 @@ sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*")
 sio_app = socketio.ASGIApp(sio, other_asgi_app=fastapi_app)  # combine both!
 
 
-@sio.event
-def connect(sid, environ):
-    print(f"connected: {sid}")
+
+
 
 @sio.event
-def disconnect(sid):
+async def connect(sid, environ):
+    print(f"connected: {sid}")
+    
+
+@sio.event
+async def disconnect(sid):
     print(f"disconnected: {sid}")
     rooms = sio.rooms(sid)
     for room in rooms:
@@ -39,14 +43,24 @@ def disconnect(sid):
     print(f"left all rooms: {rooms}")
 
 @sio.event
-def joinRoom(sid, data):
+async def joinRoom(sid, data):
     roomId = data["roomId"]
-    sio.enter_room(sid, roomId)
+    name = data["name"]
+
+    await sio.enter_room(sid, roomId)
+
+
     print(f"joined room: {roomId}")
-    sio.emit('userJoined', {
+    await sio.emit('userJoined', {
         'username': sid,
         'roomId': roomId
     }, room=roomId, skip_sid=sid)
+
+    await sio.emit("roomMessage", {
+    "roomId": roomId,
+    "message": f"💬 {sid} joined the room"
+    }, room=roomId)
+
 
 
 app = sio_app

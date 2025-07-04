@@ -5,7 +5,6 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 function Room() {
-  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [roomCreated, setRoomCreated] = useState(false);
 
