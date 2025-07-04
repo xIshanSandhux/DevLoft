@@ -1,43 +1,38 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './Room.css';
-import EnterRoom from './EnterRoom';
-import { useNavigate } from 'react-router-dom';
 
-function Room() {
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [roomCreated, setRoomCreated] = useState(false);
-  const [roomId, setRoomId] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
+function EnterRoom({roomId}) {
+  // const [name, setName] = useState('');
+  // const [password, setPassword] = useState('');
+  // const [roomCreated, setRoomCreated] = useState(false);
+  // const [roomId, setRoomId] = useState('');
+  // const [showPassword, setShowPassword] = useState(false);
+
   const API_URL = 'http://127.0.0.1:8000/api';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
-      const roomid_response = await axios.post(`${API_URL}/room_id_gen`, {
-        room_password: password
-      });
-      setRoomId(roomid_response.data.room_id);
-      
-      console.log("roomId", roomId);
-      setRoomCreated(true);
-      if(roomCreated){
-        toast.success(`Room created ${roomId} successfully!`);
-        navigate(`/enterRoom/${roomId}`);
-      }
-    } catch (error) {
-      console.error('Error generating room:', error);
-    }
+    console.log("roomId", roomId);
+    console.log("password", password);
   };
 
   return (
     <div className="room-create-container">
       <div className="room-create-card">
-        <h2 className="room-create-title">Create Room</h2>
+        <h2 className="room-create-title">Enter Room</h2>
         {!roomCreated ? (
           <form className="room-form" onSubmit={handleSubmit}>
+            <label htmlFor="name">Your Name</label>
+            <input
+              id="name"
+              type="text"
+              className="room-input"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Enter your name"
+              required
+            />
             <label htmlFor="password">Room Password</label>
             <input
               id="password"
@@ -45,12 +40,12 @@ function Room() {
               className="room-input"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              placeholder="Create a password"
+              placeholder="Enter Room Password"
 
               required
             />
             <button type="submit" className="btn btn-primary btn-large room-generate-btn">
-              Generate Room
+              Enter Room
             </button>
           </form>
         ) : (
