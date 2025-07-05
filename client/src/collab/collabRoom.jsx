@@ -60,9 +60,6 @@ function CollabRoom() {
     socket.on("userLeftRoom", (data) => {
       console.log("User left room:", data);
       toast.success(`${data.message}`);
-      if (data.name===name){
-        navigate('/');
-      }
     });
 
     // Clean up the listener on component unmount

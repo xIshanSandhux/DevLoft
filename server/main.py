@@ -52,13 +52,13 @@ async def joinRoom(sid, data):
 
     print(f"joined room: {roomId}")
     await sio.emit('userJoined', {
-        'username': sid,
+        'username': name,
         'roomId': roomId
-    }, room=roomId, skip_sid=sid)
+    }, room=roomId)
 
     await sio.emit("roomMessage", {
     "roomId": roomId,
-    "message": f" {sid} joined the room"
+    "message": f"Welcome to the room {name} !"
     }, room=roomId)
 
 @sio.event
