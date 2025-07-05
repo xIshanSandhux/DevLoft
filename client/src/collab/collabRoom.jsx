@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { connectSocket, joinRoom } from '../helper/socket';
+import { getSocket } from '../helper/socket';
 import { useEffect, useState, useRef } from 'react';
 import Editor from '@monaco-editor/react';
 import './collabRoom.css';
@@ -28,6 +28,12 @@ function CollabRoom() {
     }
   };
 
+  const handleLeaveRoom = () => {
+    if (socketRef.current) {
+      socketRef.current.emit('leaveRoom', { roomId });
+    }
+  };
+
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleSendMessage();
@@ -35,27 +41,22 @@ function CollabRoom() {
   };
 
   useEffect(() => {
-    const socket = connectSocket();
+    // Get the existing socket connection (established in enterRoom)
+    const socket = getSocket();
     socketRef.current = socket;
 
-    // Make sure the user joins the room (idempotent)
-    if (!socket.connected) {
-      socket.on('connect', () => {
-        joinRoom(roomId, name);
+    if (socket) {
+      // Listen for room messages
+      socket.on("roomMessage", (data) => {
+        setMessages((prev) => [...prev, data.message]);
       });
-    } else {
-      joinRoom(roomId, name);
     }
 
-    // Attach the listener
-    socket.on("roomMessage", (data) => {
-      setMessages((prev) => [...prev, data.message]);
-    });
-
-    // Clean up the listener
+    // Clean up the listener on component unmount
     return () => {
-      socket.off("roomMessage");
-      socket.off("connect");
+      if (socket) {
+        socket.off("roomMessage");
+      }
     };
   }, [roomId, name]);
 

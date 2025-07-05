@@ -58,8 +58,17 @@ async def joinRoom(sid, data):
 
     await sio.emit("roomMessage", {
     "roomId": roomId,
-    "message": f"💬 {sid} joined the room"
+    "message": f" {sid} joined the room"
     }, room=roomId)
+
+@sio.event
+async def leaveRoom(sid,data):
+    room_Id = data["roomId"]
+    await sio.leave_room(sid, room_Id)
+    await sio.emit("roomMessage", {
+        "roomId": room_Id,
+        "message": f" {sid} left the room"
+    }, room=room_Id)
 
 
 
