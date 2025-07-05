@@ -16,6 +16,7 @@ function CollabRoom() {
   const editorRef = useRef(null);
   const socketRef = useRef(null);
   const navigate = useNavigate();
+  const [usersInRoom, setUsersInRoom] = useState([]);
 
   const handleCodeChange = (value) => {
     setCode(value);
@@ -45,6 +46,15 @@ function CollabRoom() {
     }
   };
 
+  const copyToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Copied to clipboard!");
+    } catch (err) {
+      toast.error("Failed to copy!");
+    }
+  };
+
   useEffect(() => {
     // Get the existing socket connection (established in enterRoom)
     const socket = getSocket();
@@ -62,6 +72,16 @@ function CollabRoom() {
       toast.success(`${data.message}`);
     });
 
+    socket.on("RoomChatMessage", (data) => {
+      setMessages((prev) => [...prev, data.message]);
+    });
+
+    socket.on("usersInRoom", (data) => {
+      if (data.roomId === roomId){
+        setUsersInRoom(data.users);
+      }
+    });
+
     // Clean up the listener on component unmount
     return () => {
       if (socket) {
@@ -77,6 +97,10 @@ function CollabRoom() {
         <h1>DevLoft</h1>
         <div className="room-info">
           <span>User Name: {name}</span>
+          <span>Users in Room: {usersInRoom.map((user) => user).join(", ")}</span>
+          <button onClick={()=>copyToClipboard(`${window.location.origin}/enter-room/${roomId}`)} className="copy-button">
+              Copy Inivite Link
+          </button>
           <button onClick={handleLeaveRoom} className="leave-button">
               Leave Room
           </button>

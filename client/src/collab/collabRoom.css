@@ -130,6 +130,15 @@
   font-size: 0.8rem;
 }
 
+.copy-button {
+  padding: 0.1rem 0.6rem;
+  background-color: #0bd85d;
+  color: rgb(4, 3, 3);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
 /* Scrollbar styling for chat messages */
 .chat-messages::-webkit-scrollbar {
   width: 8px;
