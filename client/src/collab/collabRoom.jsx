@@ -17,10 +17,16 @@ function CollabRoom() {
   const socketRef = useRef(null);
   const navigate = useNavigate();
   const [usersInRoom, setUsersInRoom] = useState([]);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [showUsersDropdown, setShowUsersDropdown] = useState(false);
 
   const handleCodeChange = (value) => {
     setCode(value);
   };
+
+  const handleTotalUsers = () => {
+    setShowUsersDropdown(!showUsersDropdown);
+  }
 
   const handleSendMessage = () => {
     if (newMessage.trim() && socketRef.current) {
@@ -79,8 +85,10 @@ function CollabRoom() {
     socket.on("usersInRoom", (data) => {
       if (data.roomId === roomId){
         setUsersInRoom(data.users);
+        setTotalUsers(data.users.length);
       }
     });
+    
 
     // Clean up the listener on component unmount
     return () => {
@@ -91,13 +99,13 @@ function CollabRoom() {
     };
   }, [roomId, name]);
 
+  console.log(usersInRoom);
+  console.log(totalUsers);
   return (
     <div className="collab-room">
       <div className="header">
         <h1>DevLoft</h1>
         <div className="room-info">
-          <span>User Name: {name}</span>
-          <span>Users in Room: {usersInRoom.map((user) => user).join(", ")}</span>
           <button onClick={()=>copyToClipboard(`${window.location.origin}/enter-room/${roomId}`)} className="copy-button">
               Copy Inivite Link
           </button>
@@ -123,9 +131,36 @@ function CollabRoom() {
         </div>
 
         <div className="chat-section">
-          <div className="chat-header">
-            <h3>Chat</h3>
-          </div>
+        <div className="chat-header">
+  <h3>Chat</h3>
+  
+  {/* Users Dropdown on the right side */}
+  <div className="users-dropdown-container">
+    <span><strong>Users in Room:</strong>  </span>
+    <button 
+      className="users-dropdown-trigger" 
+      onClick={handleTotalUsers}
+    >
+      {usersInRoom.length}
+    </button>
+    
+    {showUsersDropdown && (
+      <div className="users-dropdown">
+        <div className="users-dropdown-header">
+          Online users:
+        </div>
+        <div className="users-list">
+          {usersInRoom.map((user, idx) => (
+            <div key={idx} className="user-item">
+              <span className="user-name">{user}</span>
+              {user === name && <span className="user-tag">You</span>}
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</div>
           
           <div className="chat-messages">
             {messages.map((msg, idx) => (

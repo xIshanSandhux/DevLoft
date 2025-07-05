@@ -42,10 +42,11 @@ async def connect(sid, environ):
 async def disconnect(sid):
     print(f"disconnected: {sid}")
     rooms = sio.rooms(sid)
-    del all_users[sid]
     for room in rooms:
+        # users_in_room[room].remove(all_users[sid])
         sio.leave_room(sid, room)
     print(f"left all rooms: {rooms}")
+    del all_users[sid]
 
 @sio.event
 async def joinRoom(sid, data):

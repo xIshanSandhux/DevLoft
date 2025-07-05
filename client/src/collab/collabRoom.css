@@ -50,9 +50,16 @@
 }
 
 .chat-header {
-  padding: 1rem;
+  /* padding: 1rem;
   background-color: #2d2d2d;
-  border-bottom: 1px solid #404040;
+  border-bottom: 1px solid #404040; */
+  display: flex;
+  justify-content: space-between;  /* Pushes items to opposite ends */
+  align-items: center;
+  padding: 0.6rem;
+  background-color: #2d2d2d;
+  border-bottom: 0.5px solid #404040;
+
 }
 
 .chat-header h3 {
@@ -64,19 +71,20 @@
 .chat-messages {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 0.6rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .message {
   background-color: #3c3c3c;
-  padding: 0.75rem;
-  border-radius: 8px;
+  padding: 0.7rem;
+  border-radius: 80px;
   word-wrap: break-word;
-  line-height: 1.4;
+  line-height: 1;
   font-size: 0.9rem;
+  font-family: 'Fira Code', monospace;
 }
 
 .chat-input {
@@ -90,12 +98,13 @@
 .message-input {
   flex: 1;
   padding: 0.75rem;
-  border: 1px solid #404040;
-  border-radius: 6px;
+  border: 1px solid #2baa6f;
+  border-radius: 60px;
   background-color: #1e1e1e;
   color: white;
   font-size: 0.9rem;
   outline: none;
+  font-family: 'Fira Code', monospace;
 }
 
 .message-input:focus {
@@ -103,22 +112,23 @@
 }
 
 .send-button {
-  padding: 0.75rem 1rem;
-  background-color: #007acc;
+  padding: 0.5rem 0.7rem;
+  background-color: #7da789;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 60px;
   cursor: pointer;
   font-size: 0.9rem;
+  font-family: 'Fira Code', monospace;
   transition: background-color 0.2s;
 }
 
 .send-button:hover {
-  background-color: #005a9e;
+  background-color: #009e28;
 }
 
 .send-button:active {
-  background-color: #004578;
+  background-color: #007832;
 }
 
 .leave-button {
@@ -154,6 +164,105 @@
 }
 
 .chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* Users Dropdown Styles */
+.users-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.users-dropdown-trigger {
+  background-color: #e7e7e7;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 30px;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.users-dropdown-trigger:hover {
+  background-color: #a7b2b9;
+}
+
+.users-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #2d2d2d;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  min-width: 200px;
+  margin-top: 0.5rem;
+}
+
+.users-dropdown-header {
+  padding: 0.75rem 1rem;
+  background-color: #3c3c3c;
+  border-bottom: 1px solid #404040;
+  border-radius: 8px 8px 0 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #ffffff;
+}
+
+.users-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #404040;
+  transition: background-color 0.2s;
+}
+
+.user-item:last-child {
+  border-bottom: none;
+  border-radius: 0 0 8px 8px;
+}
+
+.user-item:hover {
+  background-color: #3c3c3c;
+}
+
+.user-name {
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.user-tag {
+  background-color: #000000;
+  color: white;
+  padding: 0.1rem 0.4rem;
+  border-radius: 40px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Scrollbar for users list */
+.users-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.users-list::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.users-list::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 3px;
+}
+
+.users-list::-webkit-scrollbar-thumb:hover {
   background: #666;
 }
 
