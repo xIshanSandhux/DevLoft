@@ -121,6 +121,15 @@
   background-color: #004578;
 }
 
+.leave-button {
+  padding: 0.1rem 0.6rem;
+  background-color: #d11b1b;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
 /* Scrollbar styling for chat messages */
 .chat-messages::-webkit-scrollbar {
   width: 8px;

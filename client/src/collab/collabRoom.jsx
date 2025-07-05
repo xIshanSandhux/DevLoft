@@ -3,15 +3,19 @@ import { getSocket } from '../helper/socket';
 import { useEffect, useState, useRef } from 'react';
 import Editor from '@monaco-editor/react';
 import './collabRoom.css';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { useLocation } from 'react-router-dom';
 
 function CollabRoom() {
   const { roomId } = useParams();
-  const name = localStorage.getItem("name") || "Anonymous";
+  const { name } = useLocation().state || "Anonymous";
   const [messages, setMessages] = useState([]);
   const [code, setCode] = useState('// Welcome to the collaborative code editor!\n// Start coding here...\n');
   const [newMessage, setNewMessage] = useState('');
   const editorRef = useRef(null);
   const socketRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleCodeChange = (value) => {
     setCode(value);
@@ -30,7 +34,8 @@ function CollabRoom() {
 
   const handleLeaveRoom = () => {
     if (socketRef.current) {
-      socketRef.current.emit('leaveRoom', { roomId });
+      socketRef.current.emit('leaveRoom', { roomId, name }); 
+      navigate('/');
     }
   };
 
@@ -52,10 +57,19 @@ function CollabRoom() {
       });
     }
 
+    socket.on("userLeftRoom", (data) => {
+      console.log("User left room:", data);
+      toast.success(`${data.message}`);
+      if (data.name===name){
+        navigate('/');
+      }
+    });
+
     // Clean up the listener on component unmount
     return () => {
       if (socket) {
         socket.off("roomMessage");
+        socket.off("userLeftRoom");
       }
     };
   }, [roomId, name]);
@@ -66,6 +80,9 @@ function CollabRoom() {
         <h1>DevLoft</h1>
         <div className="room-info">
           <span>User Name: {name}</span>
+          <button onClick={handleLeaveRoom} className="leave-button">
+              Leave Room
+          </button>
         </div>
       </div>
 

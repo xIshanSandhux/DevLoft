@@ -26,10 +26,10 @@ function EnterRoom() {
         console.log("enter_room_response", message);
         if (message === "Room entered successfully"){
             const socket = connectSocket();
-            joinRoom("joinRoom", {roomId, name});
+            joinRoom(roomId, name);
             toast.success("Room entered successfully");
             localStorage.setItem("name", name);
-            navigate(`/collab-room/${roomId}`);
+            navigate(`/collab-room/${roomId}`, {state: {name}});
         } else {
             toast.error("Invalid password");
         }
