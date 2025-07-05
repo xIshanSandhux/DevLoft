@@ -105,6 +105,15 @@ async def sendMessage(sid, data):
         "message": f"{name}: {message}",
     }, room=roomId)
 
+@sio.event
+async def codeChange(sid, data):
+    roomId = data["roomId"]
+    codeUpdate = data["codeUpdate"]
+    await sio.emit("codeUpdate", {
+        "roomId": roomId,
+        "codeUpdate": codeUpdate
+    }, room=roomId, skip_sid=sid)
+
 
 
 

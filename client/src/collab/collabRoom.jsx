@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useLocation } from 'react-router-dom';
 
+
 function CollabRoom() {
   const { roomId } = useParams();
   const { name } = useLocation().state || "Anonymous";
@@ -22,7 +23,17 @@ function CollabRoom() {
 
   const handleCodeChange = (value) => {
     setCode(value);
+    if (socketRef.current){
+      socketRef.current.emit('codeChange', {
+        roomId,
+        codeUpdate: value
+      });
+    }
   };
+
+  const remoteCodeChange = (value) => {
+    setCode(value);
+  }
 
   const handleTotalUsers = () => {
     setShowUsersDropdown(!showUsersDropdown);
@@ -73,28 +84,44 @@ function CollabRoom() {
       });
     }
 
+    if (socket){
     socket.on("userLeftRoom", (data) => {
       console.log("User left room:", data);
       toast.success(`${data.message}`);
     });
+  }
 
+    if (socket){
     socket.on("RoomChatMessage", (data) => {
       setMessages((prev) => [...prev, data.message]);
     });
+  }
 
+  if (socket){
     socket.on("usersInRoom", (data) => {
       if (data.roomId === roomId){
         setUsersInRoom(data.users);
         setTotalUsers(data.users.length);
       }
     });
-    
+  }
+
+  if (socket){
+    socket.on("codeUpdate", (data) => {
+      if (data.roomId === roomId){
+        remoteCodeChange(data.codeUpdate);
+      }
+    });
+  }
 
     // Clean up the listener on component unmount
     return () => {
       if (socket) {
         socket.off("roomMessage");
         socket.off("userLeftRoom");
+        socket.off("codeUpdate");
+        socket.off("usersInRoom");
+        socket.off("RoomChatMessage");
       }
     };
   }, [roomId, name]);
@@ -122,7 +149,7 @@ function CollabRoom() {
             width="100%"
             defaultLanguage="python"
             value={code}
-            onChange={handleCodeChange}
+            onChange={(value) => handleCodeChange(value)}
             onMount={(editor) => {
               editorRef.current = editor;
             }}
