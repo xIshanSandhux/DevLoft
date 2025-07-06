@@ -1,11 +1,13 @@
 import { useParams } from 'react-router-dom';
 import { getSocket } from '../helper/socket';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Editor from '@monaco-editor/react';
 import './collabRoom.css';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useLocation } from 'react-router-dom';
+import { throttle } from 'lodash';
+import VoiceCall from './voiceCall';
 
 
 function CollabRoom() {
@@ -20,7 +22,13 @@ function CollabRoom() {
   const [usersInRoom, setUsersInRoom] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
   const [showUsersDropdown, setShowUsersDropdown] = useState(false);
+ 
 
+
+
+  
+
+  // function which handles the code change and sends the code to the server
   const handleCodeChange = (value) => {
     setCode(value);
     if (socketRef.current){
@@ -31,10 +39,14 @@ function CollabRoom() {
     }
   };
 
+
+
+  // function which handles the code change from the server
   const remoteCodeChange = (value) => {
     setCode(value);
   }
 
+  // function which handles the total users in the room
   const handleTotalUsers = () => {
     setShowUsersDropdown(!showUsersDropdown);
   }
@@ -50,6 +62,7 @@ function CollabRoom() {
     }
   };
 
+  // function which handles the leave room
   const handleLeaveRoom = () => {
     if (socketRef.current) {
       socketRef.current.emit('leaveRoom', { roomId, name }); 
@@ -57,12 +70,14 @@ function CollabRoom() {
     }
   };
 
+  // function which handles the key press
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleSendMessage();
     }
   };
 
+  // function which handles the copy to clipboard
   const copyToClipboard = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -72,6 +87,10 @@ function CollabRoom() {
     }
   };
 
+
+
+
+  // useEffect which handles the socket connection
   useEffect(() => {
     // Get the existing socket connection (established in enterRoom)
     const socket = getSocket();
@@ -80,7 +99,8 @@ function CollabRoom() {
     if (socket) {
       // Listen for room messages
       socket.on("roomMessage", (data) => {
-        setMessages((prev) => [...prev, data.message]);
+        toast.success(`${data.message}`);
+        // setMessages((prev) => [...prev, data.message]);
       });
     }
 
@@ -113,6 +133,7 @@ function CollabRoom() {
       }
     });
   }
+    
 
     // Clean up the listener on component unmount
     return () => {
@@ -122,16 +143,20 @@ function CollabRoom() {
         socket.off("codeUpdate");
         socket.off("usersInRoom");
         socket.off("RoomChatMessage");
+        socket.off("cursorUpdate");
       }
+
+    
     };
   }, [roomId, name]);
 
-  console.log(usersInRoom);
-  console.log(totalUsers);
+  // console.log(usersInRoom);
+  // console.log(totalUsers);
   return (
     <div className="collab-room">
       <div className="header">
         <h1>DevLoft</h1>
+       
         <div className="room-info">
           <button onClick={()=>copyToClipboard(`${window.location.origin}/enter-room/${roomId}`)} className="copy-button">
               Copy Inivite Link
@@ -159,35 +184,35 @@ function CollabRoom() {
 
         <div className="chat-section">
         <div className="chat-header">
-  <h3>Chat</h3>
-  
-  {/* Users Dropdown on the right side */}
-  <div className="users-dropdown-container">
-    <span><strong>Users in Room:</strong>  </span>
-    <button 
-      className="users-dropdown-trigger" 
-      onClick={handleTotalUsers}
-    >
-      {usersInRoom.length}
-    </button>
-    
-    {showUsersDropdown && (
-      <div className="users-dropdown">
-        <div className="users-dropdown-header">
-          Online users:
+          <h3>Chat</h3>
+          
+          {/* Users Dropdown on the right side */}
+          <div className="users-dropdown-container">
+            <span><strong>Users in Room:</strong>  </span>
+            <button 
+            className="users-dropdown-trigger" 
+            onClick={handleTotalUsers}
+            >
+            {usersInRoom.length}
+            </button>
+          
+            {showUsersDropdown && (
+              <div className="users-dropdown">
+                <div className="users-dropdown-header">
+                  Online users:
+                </div>
+                <div className="users-list">
+                  {usersInRoom.map((user, idx) => (
+                    <div key={idx} className="user-item">
+                      <span className="user-name">{user}</span>
+                      {user === name && <span className="user-tag">You</span>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="users-list">
-          {usersInRoom.map((user, idx) => (
-            <div key={idx} className="user-item">
-              <span className="user-name">{user}</span>
-              {user === name && <span className="user-tag">You</span>}
-            </div>
-          ))}
-        </div>
-      </div>
-    )}
-  </div>
-</div>
           
           <div className="chat-messages">
             {messages.map((msg, idx) => (
