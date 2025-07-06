@@ -15,8 +15,8 @@ fastapi_app = FastAPI()
 
 fastapi_app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # You can restrict to your frontend domain
-    allow_credentials=True,
+    allow_origins=["http://localhost:5173"],  # You can restrict to your frontend domain
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -114,6 +114,95 @@ async def codeChange(sid, data):
         "codeUpdate": codeUpdate
     }, room=roomId, skip_sid=sid)
 
+
+@sio.event
+async def cursorChange(sid, data):
+    roomId = data["roomId"]
+    cursorPosition = data["cursorPosition"]
+    userName = data["userName"]
+    await sio.emit("cursorUpdate", {
+        "roomId": roomId,
+        "position": cursorPosition,
+        "userName": userName
+    }, room=roomId, skip_sid=sid)
+
+
+
+# ----------------Voice Call Events----------------
+
+@sio.event
+async def join_voice_call(sid, data):
+    roomId = data["roomId"]
+    name = data["name"]
+    
+    print(f"{name} joined voice call in room {roomId}")
+    
+    # Notify room that user joined voice call
+    await sio.emit("user_joined_voice", {
+        "roomId": roomId,
+        "name": name,
+        "user_id": sid
+    }, room=roomId)
+
+@sio.event
+async def leave_voice_call(sid, data):
+    roomId = data["roomId"]
+    name = data["name"]
+    
+    print(f"{name} left voice call in room {roomId}")
+    
+    # Notify room that user left voice call
+    await sio.emit("user_left_voice", {
+        "roomId": roomId,
+        "name": name,
+        "user_id": sid
+    }, room=roomId)
+
+@sio.event
+async def voice_call_offer(sid, data):
+    roomId = data["roomId"]
+    offer = data["offer"]
+    caller_name = data["caller_name"]
+    
+    print(f"Voice call offer from {caller_name} in room {roomId}")
+    
+    # Send offer to all other users in the room
+    await sio.emit("voice_call_offer", {
+        "roomId": roomId,
+        "offer": offer,
+        "caller_name": caller_name,
+        "caller_id": sid
+    }, room=roomId, skip_sid=sid)
+
+@sio.event
+async def voice_call_answer(sid, data):
+    roomId = data["roomId"]
+    answer = data["answer"]
+    caller_id = data["caller_id"]
+    
+    print(f"Voice call answer from {sid} to {caller_id}")
+    
+    # Send answer back to the specific caller
+    await sio.emit("voice_call_answer", {
+        "roomId": roomId,
+        "answer": answer,
+        "answerer_id": sid
+    }, room=caller_id)
+
+@sio.event
+async def voice_call_ice_candidate(sid, data):
+    roomId = data["roomId"]
+    candidate = data["candidate"]
+    target_id = data["target_id"]
+    
+    print(f"ICE candidate from {sid} to {target_id}")
+    
+    # Send ICE candidate to specific target
+    await sio.emit("voice_call_ice_candidate", {
+        "roomId": roomId,
+        "candidate": candidate,
+        "sender_id": sid
+    }, room=target_id)
 
 
 
