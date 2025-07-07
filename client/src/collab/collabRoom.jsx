@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useLocation } from 'react-router-dom';
 import { throttle } from 'lodash';
-import VoiceCall from './voiceCall';
+
 
 
 function CollabRoom() {
@@ -22,6 +22,7 @@ function CollabRoom() {
   const [usersInRoom, setUsersInRoom] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
   const [showUsersDropdown, setShowUsersDropdown] = useState(false);
+  const [showFilePanel, setShowFilePanel] = useState(true);
  
 
 
@@ -37,6 +38,10 @@ function CollabRoom() {
         codeUpdate: value
       });
     }
+  };
+
+  const toggleFilePanel = () => {
+    setShowFilePanel(prev => !prev);
   };
 
 
@@ -143,10 +148,7 @@ function CollabRoom() {
         socket.off("codeUpdate");
         socket.off("usersInRoom");
         socket.off("RoomChatMessage");
-        socket.off("cursorUpdate");
       }
-
-    
     };
   }, [roomId, name]);
 
@@ -156,7 +158,7 @@ function CollabRoom() {
     <div className="collab-room">
       <div className="header">
         <h1>DevLoft</h1>
-       
+
         <div className="room-info">
           <button onClick={()=>copyToClipboard(`${window.location.origin}/enter-room/${roomId}`)} className="copy-button">
               Copy Inivite Link
@@ -168,6 +170,17 @@ function CollabRoom() {
       </div>
 
       <div className="main-content">
+        <div className="file-panel">
+          <div className="file-panel-header">
+            <h3>File Panel</h3>
+          </div>
+          <div className="file-list">
+            <div className="file-item">
+            <p>📁 Project Files</p>
+            </div>
+          </div>
+
+        </div>
         <div className="editor-section">
           <Editor
             height="70vh"

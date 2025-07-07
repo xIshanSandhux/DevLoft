@@ -7,6 +7,9 @@ import socketio
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.room_gen import router
+from livekit import api
+import time
+
 
 
 fastapi_app = FastAPI()
@@ -129,81 +132,6 @@ async def cursorChange(sid, data):
 
 
 # ----------------Voice Call Events----------------
-
-@sio.event
-async def join_voice_call(sid, data):
-    roomId = data["roomId"]
-    name = data["name"]
-    
-    print(f"{name} joined voice call in room {roomId}")
-    
-    # Notify room that user joined voice call
-    await sio.emit("user_joined_voice", {
-        "roomId": roomId,
-        "name": name,
-        "user_id": sid
-    }, room=roomId)
-
-@sio.event
-async def leave_voice_call(sid, data):
-    roomId = data["roomId"]
-    name = data["name"]
-    
-    print(f"{name} left voice call in room {roomId}")
-    
-    # Notify room that user left voice call
-    await sio.emit("user_left_voice", {
-        "roomId": roomId,
-        "name": name,
-        "user_id": sid
-    }, room=roomId)
-
-@sio.event
-async def voice_call_offer(sid, data):
-    roomId = data["roomId"]
-    offer = data["offer"]
-    caller_name = data["caller_name"]
-    
-    print(f"Voice call offer from {caller_name} in room {roomId}")
-    
-    # Send offer to all other users in the room
-    await sio.emit("voice_call_offer", {
-        "roomId": roomId,
-        "offer": offer,
-        "caller_name": caller_name,
-        "caller_id": sid
-    }, room=roomId, skip_sid=sid)
-
-@sio.event
-async def voice_call_answer(sid, data):
-    roomId = data["roomId"]
-    answer = data["answer"]
-    caller_id = data["caller_id"]
-    
-    print(f"Voice call answer from {sid} to {caller_id}")
-    
-    # Send answer back to the specific caller
-    await sio.emit("voice_call_answer", {
-        "roomId": roomId,
-        "answer": answer,
-        "answerer_id": sid
-    }, room=caller_id)
-
-@sio.event
-async def voice_call_ice_candidate(sid, data):
-    roomId = data["roomId"]
-    candidate = data["candidate"]
-    target_id = data["target_id"]
-    
-    print(f"ICE candidate from {sid} to {target_id}")
-    
-    # Send ICE candidate to specific target
-    await sio.emit("voice_call_ice_candidate", {
-        "roomId": roomId,
-        "candidate": candidate,
-        "sender_id": sid
-    }, room=target_id)
-
 
 
 app = sio_app
