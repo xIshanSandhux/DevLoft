@@ -7,9 +7,7 @@ import socketio
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.room_gen import router
-from livekit import api
-import time
-
+from api.livekit_api import router as livekit_api_router
 
 
 fastapi_app = FastAPI()
@@ -18,19 +16,20 @@ fastapi_app = FastAPI()
 
 fastapi_app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # You can restrict to your frontend domain
-    allow_credentials=False,
+    allow_origins=["http://localhost:5173","http://127.0.0.1:5173"],  # You can restrict to your frontend domain
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 fastapi_app.include_router(router, prefix="/api")
-
+fastapi_app.include_router(livekit_api_router, prefix="/livekitTokenGen")
 sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*")
 sio_app = socketio.ASGIApp(sio, other_asgi_app=fastapi_app)  # combine both!
 
 all_users = {}
 users_in_room = defaultdict(list)
+onCallinRoom = defaultdict(list)
 
 
 
@@ -47,7 +46,7 @@ async def disconnect(sid):
     rooms = sio.rooms(sid)
     for room in rooms:
         # users_in_room[room].remove(all_users[sid])
-        sio.leave_room(sid, room)
+        await sio.leave_room(sid, room)
     print(f"left all rooms: {rooms}")
     del all_users[sid]
 
@@ -132,6 +131,31 @@ async def cursorChange(sid, data):
 
 
 # ----------------Voice Call Events----------------
+@sio.event
+async def UserJoined(sid, data):
+    roomId = data["roomId"]
+    identity = sid
+    name = all_users[sid]
+    await sio.emit("joinCallInfo",{
+        "roomId": roomId,
+        "name": name,
+        "identity": identity
+    }, room=roomId)
+    print(f"joined voice call: {roomId} {name} {identity}")
+    onCallinRoom[roomId].append(name)
+    print(f"onCallinRoom: {onCallinRoom}")
+
+@sio.event
+async def UserLeft(sid, data):
+    roomId = data["roomId"]
+    name = data["name"]
+    onCallinRoom[roomId].remove(name)
+    await sio.emit("userLeftCall", {
+        "roomId": roomId,
+        "name": name,
+        "message": f"{name} left the call"
+    }, room=roomId)
+
 
 
 app = sio_app

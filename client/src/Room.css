@@ -22,7 +22,7 @@
 .room-create-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #fbbf24;
+  color: #17140d;
   margin-bottom: 2rem;
   text-align: center;
 }
@@ -57,6 +57,10 @@
 
 .room-generate-btn {
   margin-top: 1rem;
+  border-radius: 100px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #1e293b;
 }
 
 .room-success {

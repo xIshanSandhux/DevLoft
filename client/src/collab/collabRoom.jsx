@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useLocation } from 'react-router-dom';
 import { throttle } from 'lodash';
+import VoiceCall from './voiceCall';
+
 
 
 
@@ -158,7 +160,7 @@ function CollabRoom() {
     <div className="collab-room">
       <div className="header">
         <h1>DevLoft</h1>
-
+        <VoiceCall name={name}/>
         <div className="room-info">
           <button onClick={()=>copyToClipboard(`${window.location.origin}/enter-room/${roomId}`)} className="copy-button">
               Copy Inivite Link
@@ -179,7 +181,6 @@ function CollabRoom() {
             <p>📁 Project Files</p>
             </div>
           </div>
-
         </div>
         <div className="editor-section">
           <Editor
