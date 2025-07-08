@@ -1,6 +1,8 @@
 # DevLoft: Currently under dev
 
 Current view of the app:
+
+
 ![image](https://github.com/user-attachments/assets/022d64b2-807b-4f59-b620-af4beae4a7cb)
 ![image](https://github.com/user-attachments/assets/70f64850-60d6-43ee-89cd-a62e024c99e1)
 ![image](https://github.com/user-attachments/assets/62b876ca-f751-4440-a07b-ac1135ff93f2)
