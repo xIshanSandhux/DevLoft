@@ -4,3 +4,4 @@ python-socketio
 pydantic
 hashlib
 livekit-api
+dotenv

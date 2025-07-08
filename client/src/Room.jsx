@@ -44,7 +44,7 @@ function Room() {
 
               required
             />
-            <button type="submit" className="btn btn-primary btn-large room-generate-btn">
+            <button type="submit" className="room-generate-btn">
               Generate Room
             </button>
           </form>

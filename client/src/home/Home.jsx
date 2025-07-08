@@ -16,7 +16,7 @@ function Home() {
             <a href="#features" className="nav-link">Features</a>
             <a href="#about" className="nav-link">About</a>
             <a href="#contact" className="nav-link">Contact</a>
-            <button className="btn btn-primary" onClick={() => navigate('/generate-room')}>Get Started</button>
+            <button className="btn-primary" onClick={() => navigate('/generate-room')}>Get Started</button>
           </div>
         </div>
       </nav>
@@ -32,7 +32,7 @@ function Home() {
               Code together seamlessly with your team in real-time.
             </p>
             <div className="hero-cta">
-              <button className="btn btn-primary btn-large" onClick={() => navigate('/generate-room')}>Get Started</button>
+              <button className="btn-large" onClick={() => navigate('/generate-room')}>Get Started</button>
             </div>
           </div>
         </div>

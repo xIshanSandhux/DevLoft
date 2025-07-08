@@ -75,7 +75,7 @@ function EnterRoom() {
 
               required
             />
-            <button type="submit" className="btn btn-primary btn-large room-generate-btn">
+            <button type="submit" className="room-generate-btn">
               Enter Room
             </button>
           </form>
