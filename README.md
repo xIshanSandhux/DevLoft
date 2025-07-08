@@ -1,6 +1,4 @@
-# DevLoft
-
-Currently under dev
+# DevLoft: Currently under dev
 
 Current view of the app:
 ![image](https://github.com/user-attachments/assets/022d64b2-807b-4f59-b620-af4beae4a7cb)
