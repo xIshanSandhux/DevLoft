@@ -10,7 +10,7 @@
 }
 
 .mute-btn:hover{
-    background-color: #a0b44e;
+    box-shadow: 0 4px 10px rgb(243, 244, 243);
 }
 
 .leave-btn{
@@ -23,7 +23,7 @@
     box-shadow: 0 4px 10px rgba(216, 60, 60, 0.3); 
 }
 .leave-btn:hover{
-    background-color: #f10b0b;
+    box-shadow: 0 4px 10px rgb(243, 244, 243);
 }
 
 .join-btn{
@@ -37,5 +37,5 @@
 } 
 
 .join-btn:hover{
-    background-color: #009e28;
+    box-shadow: 0 4px 10px rgb(243, 244, 243);
 }

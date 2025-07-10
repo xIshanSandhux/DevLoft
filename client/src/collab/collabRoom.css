@@ -38,7 +38,19 @@
 .editor-section {
   flex: 1;
   padding: 1rem;
+  display: flex;
   background-color: #1e1e1e;
+}
+
+.no-files-section {
+  flex: 1;
+  padding: 1rem;
+  background-color: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
 }
 
 .chat-section {
@@ -125,7 +137,7 @@
 }
 
 .send-button:hover {
-  background-color: #009e28;
+  box-shadow: 0 4px 10px rgb(243, 244, 243);
 }
 
 .send-button:active {
@@ -140,10 +152,12 @@
   cursor: pointer;
   font-size: 0.8rem;
   box-shadow: 0 4px 10px rgba(216, 60, 60, 0.3);
+  transition: all 0.3s ease;
 }
 
 .leave-button:hover {
-  background-color: #f10b0b;
+  box-shadow: 0 4px 10px rgb(243, 244, 243);
+  
 }
 
 .copy-button {
@@ -154,10 +168,11 @@
   cursor: pointer;
   font-size: 0.8rem;
   box-shadow: 0 4px 10px rgba(138, 189, 152, 0.3);
+  transition: all 0.3s ease;
 }
 
 .copy-button:hover {
-  background-color: #009e28;
+  box-shadow: 0 4px 10px rgb(243, 244, 243);
 }
 
 /* Scrollbar styling for chat messages */
@@ -278,12 +293,28 @@
 }
 
 .file-panel {
-  width: 220px;
+  width: 300px;
   display: flex;
   flex-direction: column;
   background-color: #252526;
   border-right: 1px solid #404040;  /* This creates the partition */
 }
+
+.file-list{
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 5px;
+
+} 
+.file-icon{
+  font-size: 15px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
 
 .file-panel-header {
   /* padding: 8px 50px; */
@@ -296,6 +327,24 @@
 .file-item{
   padding: 10px;
 }
+
+.import-button {
+  background: linear-gradient(to right, #446979, #5f8a9e);
+  color: white;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 10px rgba(90, 140, 160, 0.4);
+  transition: all 0.3s ease;
+}
+
+.import-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 10px rgba(231, 233, 234, 0.6);
+}
+
 
 
 

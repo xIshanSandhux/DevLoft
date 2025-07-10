@@ -6,8 +6,11 @@ import './collabRoom.css';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useLocation } from 'react-router-dom';
-import { throttle } from 'lodash';
 import VoiceCall from './voiceCall';
+import { initBrowserFs, getFS, getPath, isIndexedDBSupported } from '../helper/browserfs';
+import { FaFileImport } from 'react-icons/fa';
+import {VscFileCode, VscFile } from 'react-icons/vsc';
+
 
 
 
@@ -25,8 +28,92 @@ function CollabRoom() {
   const [totalUsers, setTotalUsers] = useState(0);
   const [showUsersDropdown, setShowUsersDropdown] = useState(false);
   const [showFilePanel, setShowFilePanel] = useState(true);
- 
+  const [fs, setFs] = useState(null);
+  const [path, setPath] = useState(null);
+  const [isFSReady, setIsFSReady] = useState(false);
+  const [showImportLocalFileButton, setShowImportLocalFileButton] = useState(true);
+  const [files, setFiles] = useState([]);
 
+
+  useEffect(() => {
+    const initFS = async () => {
+      try{
+        console.log('Checking IndexedDB support...');
+        
+        if (!isIndexedDBSupported()) {
+          toast.error('IndexedDB not supported in this browser');
+          return;
+        }
+
+        console.log('Initializing BrowserFS with IndexedDB...');
+        // Your approach: get fs directly from initialization
+        const fileSystem = await initBrowserFs();
+        const pathModule = getPath();
+        
+        setFs(fileSystem);
+        setPath(pathModule);
+        setIsFSReady(true);
+        
+        console.log('BrowserFS is ready with IndexedDB!');
+  
+        
+      } catch (error) {
+        console.error('Failed to initialize BrowserFS:', error);
+        toast.error('Failed to initialize file system');
+      }
+    };
+    
+    initFS();
+  }, []);
+
+
+  const handleFileImport = (event) => {
+    if (!fs) {
+      toast.error('File system not ready');
+      return;
+    }
+
+    const fileList = event.target.files;
+    
+    Array.from(fileList).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const fileContent = e.target.result;
+        const fileName = file.name;
+        const filePath = `/${fileName}`;
+        
+        try {
+          // Write file to BrowserFS
+          await new Promise((resolve, reject) => {
+            fs.writeFile(filePath, fileContent, (err) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve();
+              }
+            });
+          });
+          
+          // Add to files list
+          const newFile = { name: fileName, path: filePath, content: fileContent };
+          setFiles(prev => [...prev, newFile]);
+          setShowImportLocalFileButton(false);
+          
+          // If this is the first file, set it as current
+          if (files.length === 0) {
+            setCode(fileContent);
+          }
+          
+          toast.success(`Imported ${fileName}`);
+          
+        } catch (error) {
+          console.error('Error importing file:', error);
+          toast.error(`Failed to import ${fileName}`);
+        }
+      };
+      reader.readAsText(file);
+    });
+  };
 
 
   
@@ -39,6 +126,25 @@ function CollabRoom() {
         roomId,
         codeUpdate: value
       });
+    }
+  };
+
+  const getFileIcon = (filename) => {
+    const ext = filename.split('.').pop().toLowerCase();
+    switch (ext) {
+      case 'js':
+      case 'ts':
+      case 'jsx':
+      case 'tsx':
+      case 'py':
+      case 'json':
+      case 'md':
+      case 'html':
+      case 'css':
+        return <VscFileCode />;
+      case 'txt':
+      default:
+        return <VscFile />;
     }
   };
 
@@ -175,16 +281,42 @@ function CollabRoom() {
         <div className="file-panel">
           <div className="file-panel-header">
             <h3>File Panel</h3>
+            
           </div>
           <div className="file-list">
-            <div className="file-item">
-            <p>📁 Project Files</p>
-            </div>
+          {files.map(file => (
+                  <div 
+                    key={file.path} 
+                    className="file-item"
+                    onClick={() => setCode(file.content)}
+                  >
+                    <span >{getFileIcon(file.name)}</span>
+                    <span className="file-name">{file.name}</span>
+                  </div>
+                ))}
           </div>
         </div>
-        <div className="editor-section">
+       
+        {files.length===0?(
+          <div className="no-files-section">
+            <p>Import files from your local to start collaborating !</p>
+              <label htmlFor="file-import" className="import-button">
+                <input
+                  id="file-import"
+                  type="file"
+                  multiple
+                  accept=".js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt"
+                  onChange={handleFileImport}
+                  style={{ display: 'none' }}
+                />
+                <FaFileImport style={{ marginRight: '10px', cursor: 'pointer' }} />
+                  Import Local Files
+              </label>
+          </div>
+        ):(
+          <div className="editor-section">
           <Editor
-            height="70vh"
+            height="100%"
             width="100%"
             defaultLanguage="python"
             value={code}
@@ -195,7 +327,9 @@ function CollabRoom() {
             theme="vs-dark"
           />
         </div>
+        )}
 
+      
         <div className="chat-section">
         <div className="chat-header">
           <h3>Chat</h3>
