@@ -9,8 +9,7 @@ import { useLocation } from 'react-router-dom';
 import VoiceCall from './voiceCall';
 import { initBrowserFs, getFS, getPath, isIndexedDBSupported } from '../helper/browserfs';
 import { FaFileImport } from 'react-icons/fa';
-import {VscFileCode, VscFile } from 'react-icons/vsc';
-
+import {VscFileCode, VscFile, VscFolder } from 'react-icons/vsc';
 
 
 
@@ -305,12 +304,25 @@ function CollabRoom() {
                   id="file-import"
                   type="file"
                   multiple
-                  accept=".js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt"
+                  accept=".java,.js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt"
                   onChange={handleFileImport}
                   style={{ display: 'none' }}
                 />
                 <FaFileImport style={{ marginRight: '10px', cursor: 'pointer' }} />
                   Import Local Files
+              </label>
+              <label htmlFor="folder-import" className="import-button">
+                <input
+                  id="folder-import"
+                  type="file"
+                  multiple
+                  webkitdirectory="true"
+                  accept=".java,.js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt"
+                  onChange={handleFileImport}
+                  style={{ display: 'none' }}
+                />
+                <VscFolder style={{ marginRight: '10px', cursor: 'pointer' }} />
+                  Import Local Folder
               </label>
           </div>
         ):(

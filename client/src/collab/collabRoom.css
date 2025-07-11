@@ -331,13 +331,14 @@
 .import-button {
   background: linear-gradient(to right, #446979, #5f8a9e);
   color: white;
-  font-weight: 500;
-  padding: 8px 16px;
+  font-weight: 350;
+  padding: 8px 10px;
   border-radius: 10px;
   cursor: pointer;
   border: none;
   box-shadow: 0 0 10px rgba(90, 140, 160, 0.4);
   transition: all 0.3s ease;
+  align-items: center;
 }
 
 .import-button:hover {
