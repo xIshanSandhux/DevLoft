@@ -304,10 +304,12 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 5px;
-
+  gap: 1px;
+  padding: 10px;
 } 
+.file-item{
+  padding: 1px;
+}
 .file-icon{
   font-size: 15px;
   margin-right: 10px;
@@ -324,9 +326,7 @@
   text-align: center;
 }
 
-.file-item{
-  padding: 10px;
-}
+
 
 .import-button {
   background: linear-gradient(to right, #446979, #5f8a9e);

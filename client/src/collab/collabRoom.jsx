@@ -140,6 +140,7 @@ function CollabRoom() {
       case 'md':
       case 'html':
       case 'css':
+      case 'java':
         return <VscFileCode />;
       case 'txt':
       default:
@@ -282,18 +283,19 @@ function CollabRoom() {
             <h3>File Panel</h3>
             
           </div>
-          <div className="file-list">
+          <ul className="file-list">
           {files.map(file => (
-                  <div 
-                    key={file.path} 
-                    className="file-item"
-                    onClick={() => setCode(file.content)}
-                  >
-                    <span >{getFileIcon(file.name)}</span>
-                    <span className="file-name">{file.name}</span>
-                  </div>
-                ))}
-          </div>
+            <li 
+              key={file.path} 
+              className="file-item"
+              onClick={() => setCode(file.content)}
+            >
+              <span>{getFileIcon(file.name)}</span>
+              <span className="file-name">{file.name}</span>
+            </li>
+          ))}
+        </ul>
+
         </div>
        
         {files.length===0?(
