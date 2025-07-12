@@ -9,8 +9,7 @@ import { useLocation } from 'react-router-dom';
 import VoiceCall from './voiceCall';
 import { initBrowserFs, getFS, getPath, isIndexedDBSupported } from '../helper/browserfs';
 import { FaFileImport } from 'react-icons/fa';
-import {VscFileCode, VscFile } from 'react-icons/vsc';
-
+import {VscFileCode, VscFile, VscFolder } from 'react-icons/vsc';
 
 
 
@@ -141,11 +140,108 @@ function CollabRoom() {
       case 'md':
       case 'html':
       case 'css':
+      case 'java':
         return <VscFileCode />;
       case 'txt':
       default:
         return <VscFile />;
     }
+  };
+
+  const handleFolderImport = (event) => {
+    if (!fs) {
+      toast.error('File system not ready');
+      return;
+    }
+  
+    const fileList = event.target.files;
+    const importedFiles = [];
+    let processedCount = 0;
+    const totalFiles = fileList.length;
+  
+    // Show loading toast
+    const loadingToast = toast.loading(`Importing ${totalFiles} files...`);
+  
+    Array.from(fileList).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const fileContent = e.target.result;
+        const fileName = file.name;
+        
+        // Preserve folder structure by using the relative path
+        const relativePath = file.webkitRelativePath || fileName;
+        const filePath = `/${relativePath}`;
+        
+        try {
+          // Create directory structure if needed
+          const pathParts = relativePath.split('/');
+          if (pathParts.length > 1) {
+            // Remove the filename to get the directory path
+            const dirPath = pathParts.slice(0, -1).join('/');
+            const fullDirPath = `/${dirPath}`;
+            
+            // Create directory recursively
+            await new Promise((resolve, reject) => {
+              fs.mkdir(fullDirPath, { recursive: true }, (err) => {
+                if (err && err.code !== 'EEXIST') {
+                  reject(err);
+                } else {
+                  resolve();
+                }
+              });
+            });
+          }
+  
+          // Write file to BrowserFS
+          await new Promise((resolve, reject) => {
+            fs.writeFile(filePath, fileContent, (err) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve();
+              }
+            });
+          });
+          
+          // Add to imported files list
+          const newFile = { 
+            name: fileName, 
+            path: filePath, 
+            content: fileContent,
+            relativePath: relativePath 
+          };
+          importedFiles.push(newFile);
+          
+          processedCount++;
+          
+          // Update progress
+          toast.loading(`Importing ${processedCount}/${totalFiles} files...`, { id: loadingToast });
+          
+          // If this is the last file, update the UI
+          if (processedCount === totalFiles) {
+            setFiles(prev => [...prev, ...importedFiles]);
+            setShowImportLocalFileButton(false);
+            
+            // If this is the first import, set the first file as current
+            if (files.length === 0 && importedFiles.length > 0) {
+              setCode(importedFiles[0].content);
+            }
+            
+            toast.success(`Successfully imported ${totalFiles} files from folder!`, { id: loadingToast });
+          }
+          
+        } catch (error) {
+          console.error('Error importing file:', error);
+          toast.error(`Failed to import ${fileName}`);
+          processedCount++;
+          
+          if (processedCount === totalFiles) {
+            toast.dismiss(loadingToast);
+          }
+        }
+      };
+      reader.readAsText(file);
+    });
   };
 
   const toggleFilePanel = () => {
@@ -283,18 +379,19 @@ function CollabRoom() {
             <h3>File Panel</h3>
             
           </div>
-          <div className="file-list">
+          <ul className="file-list">
           {files.map(file => (
-                  <div 
-                    key={file.path} 
-                    className="file-item"
-                    onClick={() => setCode(file.content)}
-                  >
-                    <span >{getFileIcon(file.name)}</span>
-                    <span className="file-name">{file.name}</span>
-                  </div>
-                ))}
-          </div>
+            <li 
+              key={file.path} 
+              className="file-item"
+              onClick={() => setCode(file.content)}
+            >
+              <span>{getFileIcon(file.name)}</span>
+              <span className="file-name">{file.relativePath || file.name}</span>
+            </li>
+          ))}
+        </ul>
+
         </div>
        
         {files.length===0?(
@@ -305,12 +402,25 @@ function CollabRoom() {
                   id="file-import"
                   type="file"
                   multiple
-                  accept=".js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt"
+                  accept=".java,.js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt"
                   onChange={handleFileImport}
                   style={{ display: 'none' }}
                 />
                 <FaFileImport style={{ marginRight: '10px', cursor: 'pointer' }} />
                   Import Local Files
+              </label>
+              <label htmlFor="folder-import" className="import-button">
+                <input
+                  id="folder-import"
+                  type="file"
+                  multiple
+                  webkitdirectory="true"
+                  accept=".java,.js,.jsx,.ts,.tsx,.py,.html,.css,.json,.md,.txt"
+                  onChange={handleFolderImport}
+                  style={{ display: 'none' }}
+                />
+                <VscFolder style={{ marginRight: '10px', cursor: 'pointer' }} />
+                  Import Local Folder
               </label>
           </div>
         ):(

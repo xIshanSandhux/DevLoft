@@ -304,10 +304,12 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 5px;
-
+  gap: 1px;
+  padding: 10px;
 } 
+.file-item{
+  padding: 1px;
+}
 .file-icon{
   font-size: 15px;
   margin-right: 10px;
@@ -324,20 +326,19 @@
   text-align: center;
 }
 
-.file-item{
-  padding: 10px;
-}
+
 
 .import-button {
   background: linear-gradient(to right, #446979, #5f8a9e);
   color: white;
-  font-weight: 500;
-  padding: 8px 16px;
+  font-weight: 350;
+  padding: 8px 10px;
   border-radius: 10px;
   cursor: pointer;
   border: none;
   box-shadow: 0 0 10px rgba(90, 140, 160, 0.4);
   transition: all 0.3s ease;
+  align-items: center;
 }
 
 .import-button:hover {
