@@ -296,6 +296,26 @@ function CollabRoom() {
     }
   };
 
+  function FileTree({ nodes, onFileClick }) {
+    return (
+      <ul className="file-tree">
+        {nodes.map(node => (
+          node.type === 'folder' ? (
+            <li key={node.name}>
+              <span className="folder-label">{node.name}</span>
+              <FileTree nodes={node.children} onFileClick={onFileClick} />
+            </li>
+          ) : (
+            <li key={node.path} className="file-item" onClick={() => onFileClick(node)}>
+              <span>{getFileIcon(node.name)}</span>
+              <span className="file-name">{node.name}</span>
+            </li>
+          )
+        ))}
+      </ul>
+    );
+  }
+
 
 
 
@@ -379,18 +399,10 @@ function CollabRoom() {
             <h3>File Panel</h3>
             
           </div>
-          <ul className="file-list">
-          {files.map(file => (
-            <li 
-              key={file.path} 
-              className="file-item"
-              onClick={() => setCode(file.content)}
-            >
-              <span>{getFileIcon(file.name)}</span>
-              <span className="file-name">{file.relativePath || file.name}</span>
-            </li>
-          ))}
-        </ul>
+          <FileTree
+     nodes={buildFileTree(files)}
+     onFileClick={file => setCode(file.content)}
+   />
 
         </div>
        
@@ -497,6 +509,35 @@ function CollabRoom() {
       </div>
     </div>
   );
+}
+
+function buildFileTree(files) {
+  const root = [];
+
+  files.forEach(file => {
+    const parts = (file.relativePath || file.name).split('/');
+    let current = root;
+
+    parts.forEach((part, idx) => {
+      const isFile = idx === parts.length - 1;
+      let node = current.find(n => n.name === part && n.type === (isFile ? 'file' : 'folder'));
+
+      if (!node) {
+        if (isFile) {
+          node = { ...file, type: 'file', name: part };
+        } else {
+          node = { type: 'folder', name: part, children: [] };
+        }
+        current.push(node);
+      }
+
+      if (!isFile) {
+        current = node.children;
+      }
+    });
+  });
+
+  return root;
 }
 
 export default CollabRoom;
