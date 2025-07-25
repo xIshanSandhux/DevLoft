@@ -1,0 +1,32 @@
+.hero-container {
+    /* width: 100vw;
+    height: 100vh; */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-align: center;
+    text-align: 'center';
+    width: '100vw';
+    align-items: 'center';
+    justify-content: 'center';
+    display: 'flex';
+}
+
+.heading {
+    position: 'absolute';
+    top: '50%';
+    left: '50%';
+    transform: 'translate(-50%, -50%)';
+    z-index: 2;
+    text-align: 'center';
+    width: '100vw';
+    align-items: 'center';
+    justify-content: 'center';
+    display: 'flex';
+}
+
+.shiny-text {
+    color: 'black' !important;
+}
