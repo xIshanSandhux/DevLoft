@@ -7,11 +7,13 @@ import Home from './home/Home'
 import EnterRoom from './enterRoom/EnterRoom'
 import CollabRoom from './collab/collabRoom'
 import Hero from './website/Hero'
+import Navbar from './website/Navbar'
 
 function App() {
   return (
     <Router>
       <Toaster position="top-right" />
+      <Navbar />
       <Routes>
         <Route path="/" element={<Hero />} />
         {/* <Route path="/" element={<Home />} /> */}
