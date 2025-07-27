@@ -8,15 +8,19 @@ import EnterRoom from './enterRoom/EnterRoom'
 import CollabRoom from './collab/collabRoom'
 import Hero from './website/Hero'
 import Navbar from './website/Navbar'
+import About from './website/about'
 
 function App() {
   return (
     <Router>
       <Toaster position="top-right" />
       <Navbar />
+      {/* <Hero /> */}
+      {/* <About /> */}
       <Routes>
         <Route path="/" element={<Hero />} />
         {/* <Route path="/" element={<Home />} /> */}
+        <Route path="/about" element={<About />} />
         <Route path="/generate-room" element={<Room />} />
         <Route path="/enter-room/:roomId" element={<EnterRoom />} />
         <Route path="/collab-room/:roomId" element={<CollabRoom />} />

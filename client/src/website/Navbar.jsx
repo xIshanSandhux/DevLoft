@@ -39,8 +39,8 @@ export default function Navbar() {
             Home
           </Link>
           <Link 
-            to="/generate-room" 
-            className={`navbar-link ${isActive('/generate-room') ? 'active' : ''}`}
+            to="/about" 
+            className={`navbar-link ${isActive('/about') ? 'active' : ''}`}
             onClick={closeMenu}
           >
             About
